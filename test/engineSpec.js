@@ -1487,7 +1487,7 @@ describe('Engine', function() {
                         expect(result).to.be.true();
                         engine.setUseLocalDB(false)
                         .then(function() {
-                            done();    
+                            done();
                         })
                     });
                 });
@@ -1517,7 +1517,7 @@ describe('Engine', function() {
                         expect(result[0].loanNumber).to.be('ABCDEFGHIJKLMNOPQRSTUVWXY');
                         engine.setUseLocalDB(false)
                         .then(function() {
-                            done();    
+                            done();
                         })
                     });
                 });
@@ -3129,7 +3129,8 @@ describe('Engine', function() {
         });
 
         it('should return an error when there is a connection problem', function(done) {
-            engine.setAPIURL('/');
+            // Port 4 is first IANA unassigned port. Should not be a listener there.
+            engine.setAPIURL('http://localhost:4');
             engine.runSyntactical('2013')
             .catch(function(err) {
                 expect(err.message).to.be('There was a problem connecting to the HMDA server. Please check your connection or try again later.');
@@ -3162,7 +3163,8 @@ describe('Engine', function() {
         });
 
         it('should return an error when there is a connection problem', function(done) {
-            engine.setAPIURL('/');
+            // Port 4 is first IANA unassigned port. Should not be a listener there.
+            engine.setAPIURL('http://localhost:4');
             engine.runValidity('2013')
             .catch(function(err) {
                 expect(err.message).to.be('There was a problem connecting to the HMDA server. Please check your connection or try again later.');
@@ -3206,7 +3208,8 @@ describe('Engine', function() {
         });
 
         it('should return an error when there is a connection problem', function(done) {
-            engine.setAPIURL('/');
+            // Port 4 is first IANA unassigned port. Should not be a listener there.
+            engine.setAPIURL('http://localhost:4');
             engine.runQuality('2013')
             .catch(function(err) {
                 expect(err.message).to.be('There was a problem connecting to the HMDA server. Please check your connection or try again later.');

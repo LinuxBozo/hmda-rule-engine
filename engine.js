@@ -9,7 +9,7 @@ var hmdajson = require('./lib/hmdajson'),
     _ = require('underscore'),
     brijSpec = require('brij-spec'),
     stream = require('stream'),
-    GET = require('./lib/promise-http-get'),
+    rp = require('request-promise'),
     moment = require('moment'),
     Promise = require('bluebird'),
     CONCURRENT_RULES = 10,
@@ -87,7 +87,7 @@ var resultFromResponse = function(response) {
 var resolveError = function(err) {
     if (err.message && err.message === 'Failed to resolve argument!') {
         return Promise.reject(new Error('Rule-spec error: Invalid property\nProperty: ' + err.property + ' not found!'));
-    } else if (err.message && err.message === 'connect ECONNREFUSED') {
+    } else if (err.message && err.message.indexOf('ECONNREFUSED') !== -1) {
         return Promise.reject(new Error('There was a problem connecting to the HMDA server. Please check your connection or try again later.'));
     } else {
         return Promise.reject(err);
@@ -827,7 +827,7 @@ var accumulateResult = function(ifResult, thenResult) {
         if (params !== undefined && _.isArray(params) && params.length) {
             url += '/'+params.join('/');
         }
-        return GET(url);
+        return rp(url);
     };
 
     /* ts-syntactical */
@@ -911,7 +911,7 @@ var accumulateResult = function(ifResult, thenResult) {
         }
         if (this.shouldUseLocalDB()) {
             return localCensusComboValidation([
-                {'state_code': fipsState}, 
+                {'state_code': fipsState},
                 {'county_code': fipsCounty}
             ], false)
             .then(function(result) {
@@ -1201,9 +1201,9 @@ var accumulateResult = function(ifResult, thenResult) {
                         } else {
                             if (currentEngine.shouldUseLocalDB()) {
                                 return localCensusComboValidation([
-                                    {'state_code': element.fipsState}, 
-                                    {'county_code': element.fipsCounty}, 
-                                    {'tract': element.censusTract}, 
+                                    {'state_code': element.fipsState},
+                                    {'county_code': element.fipsCounty},
+                                    {'tract': element.censusTract},
                                     {'msa_code': element.metroArea}
                                 ], false)
                                 .then(function(result) {
